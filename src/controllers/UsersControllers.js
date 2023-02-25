@@ -1,4 +1,5 @@
 const sqliteConnection = require("../database/sqlite");
+const AppError = require("../utils/AppError");
 
 class UsersController {
     /* create and insert and database data from users */
@@ -10,7 +11,7 @@ class UsersController {
 
 
         if(checkUserExists) {
-            return response.status(401).json();
+            throw new AppError("Este e-mail ja está em uso.");
         }
 
         await database.run(
@@ -18,7 +19,8 @@ class UsersController {
             [name, email, password, is_admin]
         );
 
-        return response.status(201).json();
+        
+        return response.status(201).json({ name, email, password, is_admin });
     }
 
     
