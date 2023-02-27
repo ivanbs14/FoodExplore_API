@@ -25,6 +25,26 @@ class DishController {
         response.json();
 
     }
+
+    async previewDish(request, response) {
+        const { id } = request.params;
+
+        const dish = await knex("dish").where({ id }).first();
+        const ingredients = await knex("ingredients").where({ dish_id: id }).orderBy("name");
+
+        return response.json({
+            ...dish,
+            ingredients
+        });
+    }
+
+    async delete(request, response) {
+        const { id } = request.params;
+
+        await knex("dish").where({ id }).delete("PRAGMA foreign_keys = 1");
+
+        return response.json();
+    }
 }
 
 module.exports = DishController;
