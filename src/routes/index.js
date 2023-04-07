@@ -3,13 +3,13 @@ const { Router } = require("express");
 const usersRouter = require("./users.routes");
 const dishRouter = require("./dish.routes");
 const ingredientsRouter = require("./ingredients.routes");
-const sessionsRouter = require("./sessions.routes");
+const authenticationRouter = require("./authentication.routes");
 
 const routes = Router();
 
-routes.use("/users", usersRouter);
-routes.use("/sessions", sessionsRouter);
-routes.use("/dish", dishRouter);
-routes.use("/ingredients", ingredientsRouter);
+routes.use("/api/users", usersRouter);
+routes.use("/api/authentication", authenticationRouter);
+routes.use("/api/dish", dishRouter);
+routes.use("/api/ingredients", ingredientsRouter);
 
 module.exports = routes;

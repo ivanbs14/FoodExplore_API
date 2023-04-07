@@ -4,26 +4,29 @@ class DishController {
     async create(request, response){
         const { title, category, price, description, ingredients } = request.body;
         const user_id = request.user.id;
-
-        const dish_id = await knex("dish").insert({
+        
+        const [dish_id] = await knex("dish").insert({
             user_id,
             title,
             category,
             price,
-            description
+            description,
+
         });
+
+        const dishCreated = await knex("dish").where({ id: dish_id }).first();
 
         const ingredientsInsert = await ingredients.map( name => {
             return {
                 dish_id,
                 name,
-                user_id
+                user_id,
             }
         });
 
         await knex("ingredients").insert(ingredientsInsert);
 
-        response.json();
+        response.json(dishCreated);
 
     }
 
@@ -49,7 +52,7 @@ class DishController {
 
     async filters(request, response) {
         const { title, ingredients } = request.query;
-        const user_id = request.request.user.id;
+        const user_id = request.user.id;
 
         let dish;
 

@@ -1,4 +1,4 @@
-const { Router, response } = require("express");
+const { Router } = require("express");
 const multer = require("multer");
 const uploadConfig = require("../configs/upload");
 
@@ -14,11 +14,10 @@ const dishImgController = new DishImgController();
 
 dishRoutes.use(ensureAuthenticated);
 
-dishRoutes.post("/", dishController.create);
+dishRoutes.post("/", ensureAuthenticated, dishController.create);
 dishRoutes.get("/", dishController.filters);
 dishRoutes.get("/:id", dishController.previewDish);
 dishRoutes.delete("/:id", dishController.delete);
-dishRoutes.patch("/imgdish", ensureAuthenticated, upload.single("imgdish"), dishImgController.update);
-
+dishRoutes.patch("/:id", upload.single("img_dish"), dishImgController.create);
 
 module.exports = dishRoutes;
