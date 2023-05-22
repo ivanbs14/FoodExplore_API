@@ -15,9 +15,10 @@ const dishImgController = new DishImgController();
 dishRoutes.use(ensureAuthenticated);
 
 dishRoutes.post("/", ensureAuthenticated, dishController.create);
-dishRoutes.get("/", ensureAuthenticated, dishController.filters);
+dishRoutes.get("/:id", ensureAuthenticated, dishController.allPreviewDish);
+dishRoutes.get("/", ensureAuthenticated, dishController.dishForCategory);
 dishRoutes.delete("/:id", dishController.delete);
-dishRoutes.put("/", ensureAuthenticated, dishController.update);
+dishRoutes.put("/:dishId", ensureAuthenticated, dishController.update);
 dishRoutes.patch("/:id", upload.single("img_dish"), dishImgController.create);
 
 module.exports = dishRoutes;
