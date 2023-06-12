@@ -80,7 +80,7 @@ class DishController {
     };
 
     async update(request, response) {
-        const { title, category, price, description, ingredient } = request.body;
+        const { title, category, price, description, allIngredients } = request.body;
         const id = request.user.id;
         const { dishId } = request.params;
 
@@ -98,12 +98,12 @@ class DishController {
             await knex("dish").update(dish).where({ id: dishId });
         };
 
-        if (ingredients) {
+        if (allIngredients) {
             const dish_id = await dish.id;
             const user_id = await dish.user_id;
-            await knex("ingredients").delete(ingredient).where({ dish_id: dishId });
+            await knex("ingredients").delete(allIngredients).where({ dish_id: dishId });
 
-            const ingredientsUpdate = await ingredient.map( name => {
+            const ingredientsUpdate = await allIngredients.map( name => {
                 return {
                     dish_id,
                     name,
@@ -112,7 +112,6 @@ class DishController {
             });
 
             await knex("ingredients").insert(ingredientsUpdate);
-
         };
 
         return response.json(dish);
