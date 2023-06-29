@@ -1,6 +1,7 @@
 const knex = require("../database/knex");
 
 class IngredientsController {
+    /* search ingredients by dish ID */
     async index(request, response) {
         const { dish_id } = request.query;
 

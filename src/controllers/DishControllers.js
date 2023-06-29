@@ -1,6 +1,7 @@
 const knex = require("../database/knex");
 
 class DishController {
+    /* route adm create dish */
     async create(request, response){
         const { title, category, price, description, ingredients } = request.body;
         const user_id = request.user.id;
@@ -29,12 +30,11 @@ class DishController {
         response.json(dishCreated);
     };
     
+    /* search dish by category */
     async dishForCategory(request, response) {
-        const user_id = request.user.id;
         const { category } = request.query;
 
         const allDishes = await knex("dish")
-        .where({ user_id: user_id})
         .where({ category: category})
         .select([
             "dish.id",
@@ -50,12 +50,11 @@ class DishController {
         
     };
     
+    /* view dish by dish ID */
     async allPreviewDish(request, response) {
         const { id } = request.params;
-        const user_id = request.user.id;
 
         const allDishes = await knex("dish")
-        .where({ user_id: user_id})
         .where({ id: id})
         .select([
             "dish.id",
@@ -79,12 +78,10 @@ class DishController {
         return response.json(foodWithIngred); 
     };
 
+    /* updates the existing dish */
     async update(request, response) {
         const { title, category, price, description, allIngredients } = request.body;
-        const id = request.user.id;
         const { dishId } = request.params;
-
-        /* console.log(request.body); */
 
         const dish = await knex("dish").where({ id: dishId }).first();
         const ingredients = await knex("ingredients").where({ dish_id: dishId });
@@ -117,6 +114,7 @@ class DishController {
         return response.json(dish);
     };
 
+    /* delete dish by dish ID */
     async delete(request, response) {
         const { id } = request.params;
 

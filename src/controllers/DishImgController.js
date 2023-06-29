@@ -1,8 +1,9 @@
 const knex = require("../database/knex");
 const AppError = require("../utils/AppError");
-const DiskStorage = require("../providers/DiskStorage")
+const DiskStorage = require("../providers/DiskStorage");
 
 class DishImgController {
+    /* create and store image route */
     async create(request, response){
         const { id } = request.params;
         const img = request.file.filename;

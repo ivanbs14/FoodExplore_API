@@ -1,9 +1,8 @@
 const knex = require("../database/knex");
 
 class DishControllerClient {
-   
+   /* search by category */
     async dishForCategoryClient(request, response) {
-        /* const user_id = request.user.id; */
         const { category } = request.query;
 
         const allDishes = await knex("dish")
@@ -19,9 +18,7 @@ class DishControllerClient {
         ]);
 
         return response.json(allDishes);
-        
     };
-
 }
 
 module.exports = DishControllerClient;

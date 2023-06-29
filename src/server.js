@@ -17,9 +17,9 @@ app.use("/files", express.static(uploadConfig.UPLOADS_FOLDER));
 
 app.use(routes);
 
-/* condicionais de error */
+/* error conditionals */
 app.use(( error, request, response, next ) => {
-    /* verificar se error do client */
+    /* check if the error is from the client */
     if(error instanceof AppError) {
         return response.status(error.statusCode).json({
             status: "error",
@@ -29,7 +29,7 @@ app.use(( error, request, response, next ) => {
 
     console.error(error);
 
-    /* error internal server */
+    /* checks if the error is on the internal side of the server */
     return response.status(500).json({
         status: "error",
         message: "Internal server error",

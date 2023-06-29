@@ -24,6 +24,7 @@ class UsersController {
         return response.status(201).json({ name, email, password, is_admin });
     }
 
+    /* user data update */
     async update(request, response) {
         const { name, email, password, old_password } = request.body;
         const user_id = request.user.id;
@@ -41,7 +42,6 @@ class UsersController {
             throw new AppError("Este e-mail já está em uso.");
         }
 
-        
         user.name = name ?? user.name;
         user.email = email ?? user.email;
 
@@ -58,8 +58,6 @@ class UsersController {
 
             user.password = await hash(password, 8);
         }
-
-
 
         await database.run(`UPDATE users SET
         name = ?,

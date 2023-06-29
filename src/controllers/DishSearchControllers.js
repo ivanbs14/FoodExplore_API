@@ -1,58 +1,58 @@
 const knex = require("../database/knex");
 
 class DishSearchController {
+    /* search dish by name or ingredient */
     async dishSearch(request, response) {
-        const user_id = request.user.id;
         const { search } = request.query;
 
-        /* pesquisando na tabela de dish */
-        const searchDish = await knex("dish")
-        .select([
-            "dish.id",
-            "dish.title",
-            "dish.img_dish",
-            "dish.category",
-            "dish.price",
-            "dish.description",
-        ])
-        .where("dish.user_id", user_id)
-        .whereLike("dish.title", `%${search}%`)
+        let findByIngred;
+        let findBydish;
+        let dishWithIngredTwo = [];
 
-        const userDish = await searchDish[0].id;
-        const userIngred = await knex("ingredients").where({ dish_id: userDish })
-        const pratoWithIngred = searchDish.map(dish => {
-            const pratoIngred = userIngred.filter(item => item.dish_id === dish.id);
+        /* builds an array, if 2 items separated by commas are entered */
+        const filterItem = search.split(',').map(item => item);
+        
+        /* query to display ingredient data */
+        findByIngred = await knex("ingredients")
+            .select([
+                "dish.id",
+                "dish.title",
+                "dish.price",
+                "dish.description",
+            ])
+            .whereIn("name", filterItem)
+            .innerJoin("dish", "dish.id", "ingredients.dish_id")
+            .orderBy("title");
+
+        const allItens = await knex("ingredients").whereLike("ingredients.name", `%${search}%`)
+        const dishWithIngred = findByIngred.map(dis => {
+            const itensWithDish = allItens.filter(itm => itm.dish_id === dis.id);
 
             return {
-                ...dish,
-                ingredients: pratoIngred
+                ...dis,
+                ingred: itensWithDish
             }
-        });
+        })
 
+        /* query to display dish data */
+        findBydish = await knex("dish").whereLike("dish.title", `%${search}%`).orderBy("title")
+        const idDish = await findBydish[0]?.id;
+        if(idDish){
+            const allItensTwo = await knex("ingredients").where({dish_id: idDish})
+            dishWithIngredTwo = findBydish.map(dish => {
+                const itensWithDishTwo = allItensTwo.filter(itens => itens.dish_id === dish.id);
 
-        const searchIngredients = await knex("ingredients")
-            .select([
-                "ingredients.name",
-                "ingredients.id",
-                "ingredients.dish_id", 
-            ])
-            .where("ingredients.user_id", user_id)
-            .whereLike("ingredients.name", `%${search}%`)
-        
-            const idDIsh = await searchIngredients[0].dish_id;
-            const allIngredients = await knex("ingredients").where({ dish_id: idDIsh });
-            const dishSelect = await knex("dish").where({ id: idDIsh });
-            const ingredWithPrato = dishSelect.map(dish => {
-                const pratoIngred = allIngredients.filter(item => item.dish_id === dish.id);
-    
                 return {
                     ...dish,
-                    ingredients: pratoIngred
+                    ingred: itensWithDishTwo
                 }
-            });
+            })
+        }
 
-        return response.json([pratoWithIngred, ingredWithPrato]);
-        
+        /* merge the results of all searches */
+        const searchResult = await dishWithIngred.concat(dishWithIngredTwo)
+
+        return response.json(searchResult);
     };
 }
 

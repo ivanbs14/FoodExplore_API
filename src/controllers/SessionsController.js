@@ -5,10 +5,10 @@ const authConfig = require("../configs/auth");
 const { sign } = require("jsonwebtoken");
 
 class SessionsController {
+    /* login user */
     async create(request, response) {
         const { email, password } = request.body;
 
-        /* validação de user com database */
         const user = await knex("users").where({ email }).first();
 
         if(!user) {
@@ -21,7 +21,7 @@ class SessionsController {
             throw new AppError("E-mail e/ou senha incorreta", 401);
         }
 
-        /* Criando token de autenticação */
+        /* create authorization token */
         const { secret, expiresIn } = authConfig.jwt
         const token = sign({}, secret, {
             subject: String(user.id),
