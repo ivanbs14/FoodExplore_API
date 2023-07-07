@@ -67,7 +67,7 @@ Agora, instale e execute seu aplicativo
 
 `npm run dev`
 
-ATENÇÃO, SEGUE ABAXO SENHAS PARA ACESSO:
+ATENÇÃO, SEGUE ABAIXO SENHAS PARA ACESSO:
 
 `LOGIN USER: client`
 `SENHA USER: 1234`
